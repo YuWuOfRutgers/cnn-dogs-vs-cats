@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+'''
+@time: 2024/01/17
+@update by Yu Wu
+'''
 """
 @Time ： 2022/03/01 11:34
 @Author ：KI 
@@ -21,9 +25,9 @@ from tqdm import tqdm
 from data_process import load_data
 import torch.nn.functional as F
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+print(device)
 def setup_seed(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     torch.manual_seed(seed)
@@ -144,7 +148,10 @@ def train():
 
 def test():
     Dtr, Val, Dte = load_data()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # since this code is running on mac, let's try mps
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    print(device)
     model = cnn().to(device)
     model.load_state_dict(torch.load("model/cnn.pkl"), False)
     model.eval()

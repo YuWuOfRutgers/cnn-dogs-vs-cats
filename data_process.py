@@ -1,4 +1,14 @@
 # -*- coding:utf-8 -*-
+
+"""
+@time: 2024/01/17
+@update by Yu Wu
+
+Things to notice:
+1. label: 0 for cat, 1 for dog
+2. data: 1400 images, 900 for training, 200 for validation, 300 for testing. half for cat, half for dog.
+"""
+
 """
 @Time: 2022/03/01 11:33
 @Author: KI
