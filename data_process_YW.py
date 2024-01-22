@@ -6,15 +6,12 @@
 
 Things to notice:
 1. label: 0 for cat, 1 for dog
-2. data: 1400 images, 900 for training, 200 for validation, 300 for testing. half for cat, half for dog.
+2. data: 1400 images, 1000 for training, 400 for testing. half for cat, half for dog.
+
+This code is modified from the following link:https://github.com/ki-ljl/cnn-dogs-vs-cats
 """
 
-"""
-@Time: 2022/03/01 11:33
-@Author: KI
-@File: data_process.py
-@Motto: Hungry And Humble
-"""
+
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
@@ -78,7 +75,7 @@ def load_data(batchSize=1, numWorkers=0):
     transform = transforms.Compose([
         transforms.RandomHorizontalFlip(p=0.3),
         transforms.RandomVerticalFlip(p=0.3),
-        transforms.Resize((256, 256)),
+        transforms.Resize((32, 32)),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))  # normalization
     ])
@@ -91,15 +88,17 @@ def load_data(batchSize=1, numWorkers=0):
     path4 = 'data/testing_data/dogs/dog.%d.jpg'
     data4 = init_process(path4, [1000, 1200])
     data = data1 + data2 + data3 + data4   # 1400
+    original_training = data1+data2
+    original_testing = data3+data4
     # shuffle
-    np.random.shuffle(data)
-    # train, val, test = 900 + 200 + 300
-    train_data, val_data, test_data = data[:900], data[900:1100], data[1100:]
+    np.random.shuffle(original_testing)
+    np.random.shuffle(original_training)
+    #np.random.shuffle(data)
+    # train,  test = 1000, 400
+    train_data,  test_data = original_training, original_testing
     train_data = MyDataset(train_data, transform=transform, loader=Myloader)
     Dtr = DataLoader(dataset=train_data, batch_size=batchSize, shuffle=True, num_workers=numWorkers)
-    val_data = MyDataset(val_data, transform=transform, loader=Myloader)
-    Val = DataLoader(dataset=val_data, batch_size=batchSize, shuffle=True, num_workers=numWorkers)
     test_data = MyDataset(test_data, transform=transform, loader=Myloader)
     Dte = DataLoader(dataset=test_data, batch_size=batchSize, shuffle=True, num_workers=numWorkers)
 
-    return Dtr, Val, Dte
+    return Dtr, Dte
